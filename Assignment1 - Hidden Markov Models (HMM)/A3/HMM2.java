@@ -8,239 +8,295 @@ import java.util.Collections;
 
 public class HMM2{
 
-public static double [][] matrixMultiplication(double [][] Matrix1,double [][] Matrix2 ){
-  int r1 = Matrix1.length;
-  int c1 = Matrix1[0].length;
-  int r2 = Matrix2.length;
-  int c2 = Matrix2[0].length;
+  public static float [][] matrixMultiplication(float [][] Matrix1,float [][] Matrix2 ){
+    /* Takes two matricies as input and performs matrix multiplication between them.
+    */
+    int i, j, k, m, n;
 
-  double[][] Matrixres = new double [r1][c2];
+    int noRowsMatrix1 = Matrix1.length;
+    int noColsMatrix1 = Matrix1[0].length;
+    int noRowsMatrix2 = Matrix2.length;
+    int noColsMatrix2 = Matrix2[0].length;
 
-  for (int i = 0; i < r1; i++) {
-    for(int j = 0; j < c2; j++) {
-     for(int k = 0; k < c1; k++) {
-      Matrixres[i][j] += Matrix1[i][k] * Matrix2[k][j];
-     }
+    // The resulting matrix will have dimensions given by the number of rows
+    // of matrix 1 and the number of columns of matrix 2.
+    float[][] MatrixMultiplied = new float [noRowsMatrix1][noColsMatrix2];
+
+    // Compute the result for every element in the resulting matrix.
+    for (i = 0; i < noRowsMatrix1; i++) {
+      for(j = 0; j < noColsMatrix2; j++) {
+       for(k = 0; k < noColsMatrix1; k++) {
+         MatrixMultiplied[i][j] += Matrix1[i][k] * Matrix2[k][j];
+       }
+      }
     }
-  }return Matrixres;
+    return MatrixMultiplied;
+  }
 
+
+  public static int[]  arrayFiller(String inputLine){
+    /* Fills an empty array from the content of a numerical text string values separated by white spaces.
+    */
+    int noElements, itterator;
+    String [] stringArray;
+    int[] integerArray;
+
+    // Convert text string separated by whitespaces into array of string numericla values.
+    stringArray = inputLine.split("\\s+");
+    noElements = Integer.parseInt( stringArray[0] );
+
+    // Array to store numerical array values.
+    integerArray = new int [ noElements ];
+
+    itterator = 1;
+
+    // For every element in the array we place a value from the text string input
+    //that we convert to an integer.
+    for(int i = 0; i < integerArray.length; i++){
+
+          integerArray[i] = Integer.parseInt( stringArray[itterator] );
+          itterator ++;
+    }
+
+    return integerArray;
+  }
+
+
+  public static double [][]  matrixFiller(String inputLine){
+    /* Fills an empty matrix from the content of a numerical text string values separated by white spaces.
+    */
+    String [] stringArray = inputLine.split( "\\s+" );
+    String[] cloneOfArray = Arrays.copyOf( stringArray, stringArray.length );
+
+    int no_rows, no_cols, itterator;
+
+    no_rows = Integer.parseInt( stringArray[0] );
+    no_cols = Integer.parseInt( stringArray[1] );
+
+    itterator = 2;
+
+    double [][] matrixFill = new double [no_rows][no_cols];
+
+    // For every element in the matrix we place a value from the text string inputScanner.
+    for(int row = 0; row < matrixFill.length; row ++) {
+      for(int col = 0; col < matrixFill[row].length; col++){
+
+          matrixFill[row][col] = Float.parseFloat( stringArray[itterator] );
+          itterator++;
+      }
+    }
+    return matrixFill;
+  }
+
+
+public static double maxFinder(double [] array){
+  // Retrives the largest element in an array.
+
+  double currentLargestValue;
+
+  currentLargestValue = array[0];
+
+  for( int i = 1; i < array.length; i++ ){
+
+      if( array[i] > currentLargestValue ){
+
+         currentLargestValue = array[i];
+
+      }
+  }
+  return currentLargestValue;
 }
 
 
+public static double [] getColumn(double [][] matrix1, int colIndex){
+  /*
+  Retrives a column from a matrix basec on a column index.
+  */
 
-public static int[]  observationFiller(String inputLine){
-  String [] lineArray = inputLine.split("\\s+");  //text.split("\\s+");
+  double [] extractedColumn;
+  int noRows;
 
-  //String[] cloneOfArray = Arrays.copyOf(lineArray, lineArray.length);
-  //System.out.println(Arrays.toString(cloneOfArray));
+  noRows = matrix1.length;
+  extractedColumn = new double[matrix1.length];
 
-  int noelements,itterator;
-  noelements=Integer.parseInt(lineArray[0]);
+  for ( int row = 0; row < noRows ; row ++ ){
 
-  itterator=1;
-
-  int[] vectorF=new int [noelements];
-
-  //int i = startingNumber; i <= 100; i++
-  for(int i = 0; i < vectorF.length; i++) //Denna går igenom varje rad och för varje rad vill vi gå igen varje kolumn
-  {
-        vectorF[i]=Integer.parseInt(lineArray[itterator]);
-        itterator++;
+    extractedColumn[row] = matrix1[row][colIndex];
 
   }
-  //String[] newArray = Arrays.copyOfRange(line, startIndex, endIndex);
-  return vectorF;
-
+  return extractedColumn;
 }
 
 
+public static int getIndexOfLargest(double [] array){
+  // Retrives the index of the largest element in an array.
+
+  double currentLargestValue;
+  int indexLargestValue;
+
+  currentLargestValue = array[0];
+  indexLargestValue = 0;
+
+  for( int index = 1; index < array.length; index++ ){
+
+      if( array[index] > currentLargestValue ){
+
+         currentLargestValue = array[index];
+         indexLargestValue = index;
+
+      }
+  }
+  return indexLargestValue;
+}
 
 
-public static double[][]  matrixFiller(String inputLine){
-  String [] lineArray = inputLine.split("\\s+");  //text.split("\\s+");
+public static double[][]  readStringMatrix( Scanner inputScanner ){
+  /*
+  Reads a matrix from a line input and fills a matrix/array.
+  */
+  String matrix_string = inputScanner.nextLine();
+  double [][] matrix = matrixFiller( matrix_string );
 
-  String[] cloneOfArray = Arrays.copyOf(lineArray, lineArray.length);
-  //System.out.println(Arrays.toString(cloneOfArray));
+  return matrix;
+}
 
-  int rows,cols,itterator;
-  rows=Integer.parseInt(lineArray[0]);
-  cols=Integer.parseInt(lineArray[1]);
-  //System.out.println(rows);
-  //System.out.println(cols);
 
-  itterator=2;
+public static int [] viterbiAlgorithm( int noStates, int noTimeSteps, int firstObservation, double [][] transitionMatrix, double [][]  emissionMatrix, double [] initialStateProb, int [] observationSequence){
+  /*
+  Given λ = (A, B, π) and an observation sequence O, we find an optimal state sequence for the
+  underlying Markov process. In other words, we want to uncover the hidden part of the
+  Hidden Markov Model. Note that in this version we try to find the maximum path while another
+  option could have been to take all possible paths combined maximum.
 
-  double[][] matrixF=new double [rows][cols];
 
-  //int i = startingNumber; i <= 100; i++
-  for(int r = 0; r < matrixF.length; r++) //Denna går igenom varje rad och för varje rad vill vi gå igen varje kolumn
-  {
-    //System.out.println("current row:"+r);
-    for(int c = 0; c < matrixF[r].length; c++) // här går vi igenom varje element i en rad.
-    {
-        //System.out.println("current col:"+c);
-        //System.out.println(lineArray[itterator]);
-        matrixF[r][c]=Double.parseDouble(lineArray[itterator]);
-        itterator++;
+  Implemented in accordance with: "Speech and Language Processing: An introduction to natural
+  language processing, computational linguistics, and speech recognition."" - Daniel Jurafsky &
+  James H. Martin.
+  */
 
+  double [][] deltat;
+  int [][] indiciesMaxProb;
+  int [] mostProbStateSequence;
+
+
+  indiciesMaxProb = new int [noStates][noTimeSteps];
+  deltat = new double [noStates][noTimeSteps];
+
+  for( int state = 0 ; state < noStates; state ++ ){
+
+    deltat[state][0] = Math.log( initialStateProb[state] * emissionMatrix[state][firstObservation] );
+    indiciesMaxProb[state][0] = 0;
+
+  }
+
+  for ( int t = 1 ; t < noTimeSteps; t ++ ){
+
+    for ( int currState = 0 ; currState < noStates; currState ++ ){
+
+      double [] stateProbability = new double[noStates];
+
+      for (int prevState = 0; prevState < noStates; prevState ++ ){
+
+        stateProbability[prevState] = deltat[prevState][t-1] + Math.log( transitionMatrix[prevState][currState] ) + Math.log( emissionMatrix[currState][observationSequence[t]] );
+
+      }
+
+      deltat[currState][t] = maxFinder( stateProbability );
+      indiciesMaxProb[currState][t] = getIndexOfLargest( stateProbability );
     }
   }
-  //String[] newArray = Arrays.copyOfRange(line, startIndex, endIndex);
-  return matrixF;
 
+  mostProbStateSequence = backPropagation( deltat, noTimeSteps, indiciesMaxProb);
+  return mostProbStateSequence;
 }
 
 
-public static double maxFinder(double [] vector1){
-double biggest=vector1[0];
-for(int i=1; i<vector1.length;i++){
-  if(vector1[i]>biggest){
-    biggest=vector1[i];
+public static int []  backPropagation(double[][] deltat, int noTimeSteps, int [][] indiciesMaxProb ){
+  /*
+  Backpropagation using the maximum path implemented in accordance with: "Speech and Language Processing:
+  An introduction to natural language processing, computational linguistics, and speech recognition."" -
+  Daniel Jurafsky & James H. Martin.
+  */
+
+  double maxProbLastTimeStep;
+  int pointerMaxLastTimeStep;
+  int [] mostProbStateSequence;
+
+  maxProbLastTimeStep = maxFinder( getColumn( deltat, noTimeSteps - 1 ) );
+  pointerMaxLastTimeStep = getIndexOfLargest( getColumn( deltat, noTimeSteps - 1 ) );
+
+  mostProbStateSequence = new int [noTimeSteps];
+  mostProbStateSequence[ noTimeSteps-1 ] = pointerMaxLastTimeStep;
+
+  // Backpropagation through the using the backpointers to find the most (max) probable sequence of states.
+  for (int t = noTimeSteps - 1 ; t > 0; t--){
+
+    mostProbStateSequence[t-1] = indiciesMaxProb[pointerMaxLastTimeStep][t];
+    pointerMaxLastTimeStep = indiciesMaxProb[pointerMaxLastTimeStep][t];
+
   }
-} return biggest;
-}
-
-public static double [] getColumn(double [][] matrix1,int c){
-  double [] extractVector =new double[matrix1.length];
-  for (int i=0; i<matrix1.length;i++){
-    extractVector[i]=matrix1[i][c];
-
-  }return extractVector;
-}
-
-
-public static int indexOfMaxFinder(double [] vector1){
-double biggest=vector1[0];
-int indexOfBiggest=0;
-for(int i=1; i<vector1.length;i++){
-  if(vector1[i]>biggest){
-    biggest=vector1[i];
-    indexOfBiggest=i;
-  }
-} return indexOfBiggest;
+  return mostProbStateSequence;
 }
 
 
 public static void main (String[] args){
 
+  // A scanner used to read the transition and emission matricies and the
+  // initial state probability distribution.
+  Scanner inputScanner;
+
+  inputScanner = new Scanner(System.in);
+
+  // The HMM parameters.
+  double [][] transitionMatrix, emissionMatrix;
+  double [] initialStateProb;
+  int [] observationSequence;
+  int noStates, noTimeSteps, firstObservation;
+  int [] mostProbStateSequence;
+  String observationSequenceString;
+
+  // Parameter used to store the (max) most probable state sequence.
+  String mostProbStateSequenceString;
+
+  // A scanner used to read the input line by line.
+  inputScanner = new Scanner( System.in );
+
+  // The transition and emission matricies and the initial state probability
+  // distribution.
+  transitionMatrix = readStringMatrix( inputScanner );
+  emissionMatrix = readStringMatrix( inputScanner );
+  initialStateProb = readStringMatrix( inputScanner )[0];
+
+  // Read the observation sequence form the input.
+  observationSequenceString = inputScanner.nextLine();
+  observationSequence = arrayFiller( observationSequenceString );
 
 
+  // Initlize parameters fro the network
+  firstObservation= observationSequence[0];
+  noStates = transitionMatrix[0].length;
+  noTimeSteps = observationSequence.length;
 
-        //String fileName = args[0];
-        //File file = new File(fileName);
+  /*
+  Given λ = (A, B, π) and an observation sequence O, we find an optimal state sequence for the
+  underlying Markov process. In other words, we want to uncover the hidden part of the
+  Hidden Markov Model. Note that in this version we try to find the maximum path while another
+  option could have been to take all possible paths combined maximum.
+  */
 
-        Scanner input;
+  mostProbStateSequence = viterbiAlgorithm( noStates, noTimeSteps, firstObservation, transitionMatrix, emissionMatrix, initialStateProb, observationSequence);
 
-        //try{
-        input = new Scanner(System.in);
-        //while(input.hasNextLine()){
-        //int row, col;
-        String line=input.nextLine();
-        double [][] transitionMatrix =matrixFiller(line);
+  // The result is converted to a format accepted by kattis.se
 
-        //int[] cloneOfArray = Arrays.copyOf(transitionMatrix[2], transitionMatrix[2].length);
-        //System.out.println(Arrays.toString(cloneOfArray));
-        //System.out.println("Transistionmatrix");
+  mostProbStateSequenceString = "" ;
 
+  for ( int i = 0; i < mostProbStateSequence.length; i++ ){
 
-        String line2=input.nextLine();
-        double [][] emissionMatrix = matrixFiller(line2);
+    mostProbStateSequenceString += " " + Integer.toString( mostProbStateSequence[i] );
 
+  }
 
-        String line3=input.nextLine();
-        double [] initialStateProb = matrixFiller(line3)[0];
-
-
-        String line4=input.nextLine();
-        int [] observationSequence = observationFiller(line4);
-
-        //System.out.println(Arrays.toString(observationSequence));
-        int firstobsvalandindex= observationSequence[0];
-
-        int noStates = transitionMatrix[0].length;
-        //System.out.println("nostates: "+noStates);
-        int noTimeSteps =observationSequence.length;
-
-        double []delta0=new double [noStates];
-        int [][]indiciesMaxProb=new int [noStates][noTimeSteps];
-
-        for(int i=0;i<noStates;i++){
-          delta0[i]=Math.log(initialStateProb[i]*emissionMatrix[i][firstobsvalandindex]);
-          indiciesMaxProb[i][0]=0;
-        }
-
-
-        //int indexMaxTimeStepProb=indexOfMaxFinder(delta0);
-        //indiciesMaxProb[0]=indexMaxTimeStepProb;
-
-        double [][]deltat=new double [noStates][noTimeSteps];
-
-        for(int l=0; l<delta0.length;l++){
-          deltat[l][0]=delta0[l];
-
-        }
-
-        for (int t =1; t <noTimeSteps;t++){
-          //double [] tmpTimeStepProb = new double [noStates];
-          //System.out.println("Timestep : "+t);
-          for (int i=0;i<noStates;i++){
-            double []tmpStateProb =new double[noStates];
-            //System.out.println("i: "+i);
-            for (int j=0;j<noStates;j++){
-            //double maxDeltaPrev = Collections.max(deltat[t-1])
-            //observationSequence[t] the value of this is the same as the index
-            //System.out.println("i:"+i);
-            //System.out.println("j:"+j);
-            //System.out.println("deltat[j][t-1]"+deltat[j][t-1]);
-            //System.out.println("Math.log(transitionMatrix[j][i])"+Math.log(transitionMatrix[j][i]));
-            //System.out.println("Math.log(emissionMatrix[i][observationSequence[t]])"+Math.log(emissionMatrix[i][observationSequence[t]]));
-            //System.out.println();
-            tmpStateProb[j]=deltat[j][t-1]+Math.log(transitionMatrix[j][i])+Math.log(emissionMatrix[i][observationSequence[t]]);
-
-            }
-            //if(t==3){
-            //System.out.println("State: "+i);
-            //System.out.println(Arrays.toString(tmpStateProb));
-            //System.out.println(maxFinder(tmpStateProb));
-            deltat[i][t]=maxFinder(tmpStateProb);
-            indiciesMaxProb[i][t]=indexOfMaxFinder(tmpStateProb);
-            //System.out.println();
-          }
-
-
-        }
-        double maxProbLastTimeStep = maxFinder(getColumn(deltat,noTimeSteps-1));
-        int pointerLastTimeStep = indexOfMaxFinder(getColumn(deltat,noTimeSteps-1));
-
-        //System.out.println(Arrays.deepToString(indiciesMaxProb));
-        String res=Integer.toString(pointerLastTimeStep);
-        //System.out.println(res);
-        int [] resArray = new int [noTimeSteps];
-        resArray[noTimeSteps-1]=pointerLastTimeStep;
-        //System.out.println(Arrays.toString(resArray));
-
-        for (int t =noTimeSteps-1; t> 0;t--){
-          //System.out.println("t :"+t);
-          resArray[t-1]=indiciesMaxProb[pointerLastTimeStep][t];
-          pointerLastTimeStep=indiciesMaxProb[pointerLastTimeStep][t];
-          //System.out.println(Arrays.toString(resArray));
-          //System.out.println(res);
-        }
-        String val= Integer.toString(resArray[0]);
-
-        for (int i=1; i<resArray.length;i++){
-          val+=" "+Integer.toString(resArray[i]);
-          //System.print(val)
-        }
-        System.out.println(val);
-        //String resFinal = Arrays.toString(resArray);
-        //System.out.println(String.join(resFinal));
-
-
-
-
-        //} catch (FileNotFoundException exception) {
-        //  System.out.println("The file does not exist");}
-    }
-
+  System.out.print("The most probable state sequence: ");
+  System.out.print(mostProbStateSequenceString);
+}
 }
