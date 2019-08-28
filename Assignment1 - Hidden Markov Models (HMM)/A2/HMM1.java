@@ -7,220 +7,200 @@ import java.lang.Math;
 
 public class HMM1{
 
-public static double [][] matrixMultiplication(double [][] myMatrixA,double [][] myMatrixB ){
+  public static float [][] matrixMultiplication(float [][] Matrix1,float [][] Matrix2 ){
+    /* Takes two matricies as input and performs matrix multiplication between them.
+    */
+    int i, j, k, m, n;
 
-  int i, j, k, m, n;
+    int noRowsMatrix1 = Matrix1.length;
+    int noColsMatrix1 = Matrix1[0].length;
+    int noRowsMatrix2 = Matrix2.length;
+    int noColsMatrix2 = Matrix2[0].length;
 
-  int rowsA = myMatrixA.length;
-  int colsA = myMatrixA[0].length;
-  int rowsB = myMatrixB.length;
-  int colsB = myMatrixB[0].length;
+    // The resulting matrix will have dimensions given by the number of rows
+    // of matrix 1 and the number of columns of matrix 2.
+    float[][] MatrixMultiplied = new float [noRowsMatrix1][noColsMatrix2];
 
-  double[][] myMatrixC = new double [rowsA][colsB];
-
-
-  //System.out.println("rader : "+rowsA);
-  //System.out.println("kolumner "+colsB);
-
-  for (i = 0; i < rowsA; i++) {
-
-    for(j = 0; j < colsB; j++) {
-
-     for(k = 0; k < colsA; k++) {
-       //System.out.println(myMatrixA[i][k] * myMatrixB[k][j]);
-      myMatrixC[i][j] += myMatrixA[i][k] * myMatrixB[k][j];
-
-      //System.out.println(myMatrixA[i][k] * myMatrixB[k][j]);
-     }
+    // Compute the result for every element in the resulting matrix.
+    for (i = 0; i < noRowsMatrix1; i++) {
+      for(j = 0; j < noColsMatrix2; j++) {
+       for(k = 0; k < noColsMatrix1; k++) {
+         MatrixMultiplied[i][j] += Matrix1[i][k] * Matrix2[k][j];
+       }
+      }
     }
-  }return myMatrixC;
-
-}
-
-
-
-public static int[]  observationFiller(String inputLine){
-  String [] lineArray = inputLine.split("\\s+");  //text.split("\\s+");
-
-  //String[] cloneOfArray = Arrays.copyOf(lineArray, lineArray.length);
-  //System.out.println(Arrays.toString(cloneOfArray));
-
-  int noelements,itterator;
-  noelements=Integer.parseInt(lineArray[0]);
-
-  itterator=1;
-
-  int[] vectorF=new int [noelements];
-
-  //int i = startingNumber; i <= 100; i++
-  for(int i = 0; i < vectorF.length; i++) //Denna går igenom varje rad och för varje rad vill vi gå igen varje kolumn
-  {
-        vectorF[i]=Integer.parseInt(lineArray[itterator]);
-        itterator++;
-
+    return MatrixMultiplied;
   }
-  //String[] newArray = Arrays.copyOfRange(line, startIndex, endIndex);
-  return vectorF;
 
+
+public static int[]  arrayFiller(String inputLine){
+  /* Fills an empty array from the content of a numerical text string values separated by white spaces.
+  */
+  int noElements, itterator;
+  String [] stringArray;
+  int[] integerArray;
+
+  // Convert text string separated by whitespaces into array of string numericla values.
+  stringArray = inputLine.split("\\s+");
+  noElements = Integer.parseInt( stringArray[0] );
+
+  // Array to store numerical array values.
+  integerArray = new int [ noElements ];
+
+  itterator = 1;
+
+  // For every element in the array we place a value from the text string input
+  //that we convert to an integer.
+  for(int i = 0; i < integerArray.length; i++){
+
+        integerArray[i] = Integer.parseInt( stringArray[itterator] );
+        itterator ++;
+  }
+
+  return integerArray;
 }
 
 
+public static double [][]  matrixFiller(String inputLine){
+  /* Fills an empty matrix from the content of a numerical text string values separated by white spaces.
+  */
+  String [] stringArray = inputLine.split( "\\s+" );
+  String[] cloneOfArray = Arrays.copyOf( stringArray, stringArray.length );
 
+  int no_rows, no_cols, itterator;
 
-public static double[][]  matrixFiller(String inputLine){
-  String [] lineArray = inputLine.split("\\s+");  //text.split("\\s+");
+  no_rows = Integer.parseInt( stringArray[0] );
+  no_cols = Integer.parseInt( stringArray[1] );
 
-  String[] cloneOfArray = Arrays.copyOf(lineArray, lineArray.length);
-  //System.out.println(Arrays.toString(cloneOfArray));
+  itterator = 2;
 
-  int rows,cols,itterator;
-  rows=Integer.parseInt(lineArray[0]);
-  cols=Integer.parseInt(lineArray[1]);
-  //System.out.println(rows);
-  //System.out.println(cols);
+  double [][] matrixFill = new double [no_rows][no_cols];
 
-  itterator=2;
+  // For every element in the matrix we place a value from the text string inputScanner.
+  for(int row = 0; row < matrixFill.length; row ++) {
+    for(int col = 0; col < matrixFill[row].length; col++){
 
-  double[][] matrixF=new double [rows][cols];
-
-  //int i = startingNumber; i <= 100; i++
-  for(int r = 0; r < matrixF.length; r++) //Denna går igenom varje rad och för varje rad vill vi gå igen varje kolumn
-  {
-    //System.out.println("current row:"+r);
-    for(int c = 0; c < matrixF[r].length; c++) // här går vi igenom varje element i en rad.
-    {
-        //System.out.println("current col:"+c);
-        //System.out.println(lineArray[itterator]);
-        matrixF[r][c]=Double.parseDouble(lineArray[itterator]);
+        matrixFill[row][col] = Float.parseFloat( stringArray[itterator] );
         itterator++;
-
     }
   }
-  //String[] newArray = Arrays.copyOfRange(line, startIndex, endIndex);
-  return matrixF;
-
+  return matrixFill;
 }
 
+
+public static double[][]  readStringMatrix( Scanner inputScanner ){
+  /*
+  Reads a matrix from a line input and fills a matrix/array.
+  */
+  String matrix_string = inputScanner.nextLine();
+  double [][] matrix = matrixFiller( matrix_string );
+
+  return matrix;
+}
+
+
+public static double [][] forwardPass(int noStates, int noTimeSteps, int firstObservation, double [][] emissionMatrix, double [] initialStateProb, double [][] transitionMatrix, int [] observationSequence ){
+  // The forward algorithm i.e the alpha pass used to compute:
+  //P(O_{1,..t},x_t = q_s| \lambda) where t is a certain time step and s a certain state.
+  // i.e. the probabilities for each posible state for a sequence of observations given a HMM model.
+
+  double [][] alphat = new double [noStates][noTimeSteps];
+  int firstTimeStep = 0;
+
+  // Computing all the values for the first time step: alpha_{0}(state).
+  for( int state = 0; state < noStates ; state ++ ){
+
+    alphat[state][firstTimeStep] = initialStateProb[state] * emissionMatrix[state][firstObservation];
+
+  }
+
+  // Computing all the values for all states for all time steps except for
+  // the first: alpha_{t}(state).
+
+  for ( int t = 1; t < noTimeSteps; t++ ){
+
+    double ct = 0;
+
+    for ( int currState = 0; currState < noStates; currState++ ){
+
+      for ( int prevState = 0 ; prevState < noStates; prevState++ ){
+
+        alphat[currState][t] = alphat[currState][t] + alphat[prevState][t-1] * transitionMatrix[prevState][currState];
+
+      }
+
+      alphat[currState][t] = alphat[currState][t] * emissionMatrix[currState][observationSequence[t]];
+      ct = ct + alphat[currState][t];
+    }
+  }
+
+  return alphat;
+}
+
+
+public static double  computeObservationProbabilty( int noStates, int noTimeSteps, double [][] alphat ){
+  /*
+  Computes the probability of an observation sequence using probabilities on the form: P(O_{1,..t},x_t = q_s| \lambda).
+  // i.e. the probabilities for each posible state for a sequence of observations given a HMM model.
+  */
+  double observationSequenceProbability;
+
+  observationSequenceProbability = 0;
+
+  for( int state = 0 ; state < noStates; state++ ){
+
+    observationSequenceProbability = observationSequenceProbability + alphat[state][noTimeSteps-1];
+
+  }
+return observationSequenceProbability;
+}
 
 
 public static void main (String[] args){
-        /**
-        double [][] testmatrix1={{1,2,3},{2,2,2},{3,3,3}};
-        double [][] testmatrix2={{1},{1},{1}};
-        double [][] matrixres=matrixMultiplication(testmatrix1,testmatrix2);
 
-        double[] cloneOfArray = Arrays.copyOf(matrixres[2], matrixres[2].length);
-        System.out.println(Arrays.toString(cloneOfArray));
-        **/
+        // A scanner used to read the transition and emission matricies and the
+        // initial state probability distribution.
+        Scanner inputScanner;
 
-        /**
+        // The HMM parameters.
+        double [][] transitionMatrix, emissionMatrix;
+        double [] initialStateProb;
+        int [] observationSequence;
+        int noStates, noTimeSteps, firstObservation;
+        String observationSequenceString;
 
-        String fileName = args[0];
-        File file = new File(fileName);
-        **/
-        Scanner input;
+        // Parameters used to make computations with the HMM.
+        double [][] alphat;
+        double observationSequenceProbability;
 
-        //try{
-        input = new Scanner(System.in);
-        //while(input.hasNextLine()){
-        //int row, col;
-        String line=input.nextLine();
-        double [][] transitionMatrix =matrixFiller(line);
+        // A scanner used to read the input line by line.
+        inputScanner = new Scanner( System.in );
 
-        //int[] cloneOfArray = Arrays.copyOf(transitionMatrix[2], transitionMatrix[2].length);
-        //System.out.println(Arrays.toString(cloneOfArray));
-        //System.out.println("Transistionmatrix");
+        // The transition and emission matricies and the initial state probability
+        // distribution.
+        transitionMatrix = readStringMatrix( inputScanner );
+        emissionMatrix = readStringMatrix( inputScanner );
+        initialStateProb = readStringMatrix( inputScanner )[0];
 
-
-        String line2=input.nextLine();
-        double [][] emissionMatrix = matrixFiller(line2);
+        // Read the observation sequence form the input.
+        observationSequenceString = inputScanner.nextLine();
+        observationSequence = arrayFiller( observationSequenceString );
 
 
-        String line3=input.nextLine();
-        double [] initialStateProb = matrixFiller(line3)[0];
+        firstObservation = observationSequence[0];
+        noStates = transitionMatrix[0].length;
+        noTimeSteps = observationSequence.length;
 
+        // The forward algorithm i.e the alpha pass used to compute:
+        //P(O_{1,..t},x_t = q_s| \lambda) where t is a certain time step and s a certain state.
 
-        String line4=input.nextLine();
-        int [] observationSequence = observationFiller(line4);
+        alphat = forwardPass(noStates, noTimeSteps, firstObservation, emissionMatrix, initialStateProb, transitionMatrix, observationSequence);
 
-        //System.out.println(Arrays.toString(observationSequence));
+        observationSequenceProbability = computeObservationProbabilty( noStates, noTimeSteps, alphat);
 
-        //compute alfa0
-        int firstobsvalandindex= observationSequence[0];
-        //System.out.println(firstobsvalandindex);
-
-        int noStates = transitionMatrix[0].length;
-        int noTimeSteps =observationSequence.length;
-        double c0 =0;
-        double []alfa0=new double [transitionMatrix[0].length];
-        for(int i=0;i<noStates;i++){
-          alfa0[i]=initialStateProb[i]*emissionMatrix[i][firstobsvalandindex];
-          c0=c0+alfa0[i];
-          //System.out.println("emissionMatrix[i][firstobsvalandindex]: "+c0);
-          //System.out.println("alfa0[i] "+alfa0[i]);
-        }
-        //System.out.println();
-
-
-        //scale the alfa0(i)
-        c0=1/c0;
-        //tog bort detta skalning
-        //for(int i=0;i<noStates;i++){
-        //    alfa0[i]=alfa0[i]*c0;
-            //System.out.println("alfa0[i] "+alfa0[i]);
-        //  }
-
-        //compute alfat(i)
-        //double []alfa0=new double [transitionMatrix[0].length];
-        double [][]alfat=new double [noStates][noTimeSteps];
-        for(int l=0; l<alfa0.length;l++){
-          alfat[l][0]=alfa0[l];
-
-        }
-        //System.out.println(Arrays.deepToString(alfat));
-        Scanner reader = new Scanner(System.in);
-        for (int t =1; t <noTimeSteps;t++){
-          //System.out.println("New time step");
-          double ct=0;
-          for (int i=0;i<noStates;i++){
-            //System.out.println("Current time step");
-            for (int j=0; j<noStates;j++){
-              //System.out.println("Previous time step");
-              alfat[i][t]=alfat[i][t]+alfat[j][t-1]*transitionMatrix[j][i];
-              //System.out.println("alfat[i][t]"+alfat[i][t]);
-              //System.out.println("alfat[j][t-1]"+alfat[j][t-1]);
-              //System.out.println("transitionMatrix[j][i]"+transitionMatrix[j][i]);
-              //System.out.println("###########");
-            } // observationSequence[t] the value is the same as the index
-            alfat[i][t]=alfat[i][t]*emissionMatrix[i][observationSequence[t]];
-            ct=ct+alfat[i][t];
-          }
-          //tog bort detta skalning
-          //ct=1/ct;
-          //for(int i=0;i<noStates;i++){
-          //  alfat[i][t]=ct*alfat[i][t];
-          //}
-
-          //System.out.println();
-
-        }
-        double observationSequenceProbability=0;
-        for( int i=0;i<noStates;i++){
-          observationSequenceProbability =observationSequenceProbability+alfat[i][noTimeSteps-1];
-
-        }
-        System.out.println(observationSequenceProbability);
-
-
-
-
-
-
-
-
-
-        //} catch (FileNotFoundException exception) {
-        //  System.out.println("The file does not exist");}
+        System.out.print( "The probability of the observation sequence: " );
+        System.out.print( observationSequenceString );
+        System.out.print(" . Probability: ");
+        System.out.println( observationSequenceProbability );
     }
-
 }
