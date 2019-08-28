@@ -69,15 +69,12 @@ public static float[][]  readStringMatrix( Scanner inputScanner ){
   return matrix;
 }
 
-
-
-
 public static void main (String[] args){
 
         // A scanner used to read the transition and emission matricies and the
         // initial state probability distribution.
         Scanner inputScanner;
-        inputScanner = new Scanner(System.in);
+        inputScanner = new Scanner( System.in );
 
         // The transition and emission matricies and the initial state probability
         // distribution.

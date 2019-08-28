@@ -8,6 +8,7 @@ import java.util.Collections;
 
 public class HMM2{
 
+
   public static float [][] matrixMultiplication(float [][] Matrix1,float [][] Matrix2 ){
     /* Takes two matricies as input and performs matrix multiplication between them.
     */
@@ -34,7 +35,7 @@ public class HMM2{
   }
 
 
-  public static int[]  arrayFiller(String inputLine){
+  public static int[]  arrayFiller( String inputLine ){
     /* Fills an empty array from the content of a numerical text string values separated by white spaces.
     */
     int noElements, itterator;
