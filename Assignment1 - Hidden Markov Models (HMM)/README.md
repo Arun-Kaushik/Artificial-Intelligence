@@ -6,14 +6,22 @@ The purpose of this task is to predict how the system will evolve over time and 
 
 More specifically, the task is to given the current state probability distribution estimate the probabity for the different emissions after the next transition, i.e. after the system has made a single transition.
 
+The code can be found here: [HMM0](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A1)
+
 ## HMM1 Probability of Emission Sequence
 In this task the probability to observe a certain emission sequence given a HMM model is estimated. In the task the HMM model and a sequence of observations are given(aka emissions, events, etc).
+
+The code can be found here: [HMM1](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A2)
 
 ## HMM2 Estimate Sequence of States
 In this task the most likely sequence of (hidden) states that the system moves through is calculated given an emission sequence and an HMM model using the Viterbi algorithm.
 
+The code can be found here: [HMM2](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A3)
+
 ## HMM3 Estimate Model
 In this task the model parameters for an HMM is estimated using the Baum Welch algorithm.
+
+The code can be found here: [HMM3](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A4)
 
 ## Duck Hunt
 <p float="left" align='center'>  
@@ -21,6 +29,9 @@ In this task the model parameters for an HMM is estimated using the Baum Welch a
  />
 
 ### Table of Contents
+All code can be found here:
+[Duck Hunt](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/Duck%20Hunt)
+
 The game logic can be found in the Player class:
 [Player](https://github.com/alexandrahotti/Artificial-Intelligence/blob/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/Duck%20Hunt/GAME/Player.java)
 
