@@ -1,9 +1,5 @@
-# Java skeleton for duck hunt dd2380
 
-# Compile
-javac *.java
-
-# Run
+#Running the code
 # The agent can be run in two different modes:
 # 2. Server - act as the judge by sending predefined observations one at a time
 #    and asking the client to respond 
