@@ -1,7 +1,7 @@
 # Artificial-Intelligence
 The repository contains lab assignments for the course Artificial Intelligence. These assignments deal with Hidden Markov Models and Zero Sum Games.
 
-## Assignment 1
+## Assignment 1 - Hidden Markov Models
 
 ### HMM0 Next Emission Distribution
 The purpose of this task is to predict how the system will evolve over time and estimate the probability for different emissions / events in the system i.e. what can be observed from the HMM. Given parameters of the HMM i.e. the state probability distribution (i.e. the probability that the system is in each of the N states), the transition matrix (i.e. the matrix that gives the probability to transition from one state to another) and the emission matrix (i.e. the matrix that gives the probability for the different emissions / events / observations given a certain state). These parameters are commonly referred to as λ = (A, B, π).
@@ -57,3 +57,15 @@ This version of the game can be broken down into three main, dependent, topics:
 * Identifying the bird species to avoid forbidden targets and maximize score.
 
 **The code for the HMM can be found in the HMM class.**
+
+## Assignment 2 - Zero Sum Games
+
+### 2D Tic-tac-toe
+
+In this problem, you will implement a program that plays the game of Tic-Tac-Toe. Your goal is to implement a strategy that allows your program to win (or not lose) as often as possible. You will be provided a skeleton which generates a list of valid moves for you to choose from (see section ).
+
+There is an square board 𝐻, consisting of 16 cells. Two players, 𝑋 and 𝑌, take turns marking blank cells in 𝐻. The first player to mark 4 cells along a row wins. Here by a row we mean any 4 cells, whose centres lie along a straight line in 𝐻. So, any horizontal, vertical and diagonal row is winning. In this assignment, our goal is to find the best possible move for player 𝑋 given a particular state of the game.
+
+### 3D Tic-tac-toe
+
+### Checkers
