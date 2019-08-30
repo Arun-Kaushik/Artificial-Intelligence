@@ -8,18 +8,24 @@ The purpose of this task is to predict how the system will evolve over time and 
 
 More specifically, the task is to given the current state probability distribution estimate the probabity for the different emissions after the next transition, i.e. after the system has made a single transition.
 
+The code can be found here: [HMM0](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A1)
+
 
 ### HMM1 Probability of Emission Sequence
 In this task the probability to observe a certain emission sequence given a HMM model is estimated. In the task the HMM model and a sequence of observations are given (aka emissions, events, etc). The probability is estimated using the forward algorithm or α-pass algorithm which gives us. More specificallt the probabilities calculated are the probabilities of being  in a certain state i at time t after having observed a observation sequence up to the curren time  step t.
 
 ### HMM2 Estimate Sequence of States
-In this task the most likely sequence of (hidden) states that the system moves through is calculated given an emission sequence and an HMM model by using the Viterbi algorithm and backpointers.
+In this task the probability to observe a certain emission sequence given a HMM model is estimated. In the task the HMM model and a sequence of observations are given (aka emissions, events, etc). The probability is estimated using the forward algorithm or α-pass algorithm which gives us. More specificallt the probabilities calculated are the probabilities of being  in a certain state i at time t after having observed a observation sequence up to the curren time  step t.
+
+The code can be found here: [HMM1](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A2)
 
 ### HMM3 Estimate Model
 In this task the model parameters for an HMM is estimated using the Baum Welch algorithm.
 
 More specifically this is achieved by combining the backward and forward pass algorithms, also called: α-pass and β-pass.
 To estimate the HMM parameters λ = (A, B, π) they are iteratively reestimated using two parameters called di-gamma γ_t(i,j) and gamma γ_t(i) until convergence is reached.
+
+The code can be found here: [HMM3](https://github.com/alexandrahotti/Artificial-Intelligence/tree/master/Assignment1%20-%20Hidden%20Markov%20Models%20(HMM)/A4)
 
 ### Duck Hunt
 <p float="left" align='center'>  
