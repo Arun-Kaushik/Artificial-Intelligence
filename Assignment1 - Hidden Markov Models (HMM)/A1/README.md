@@ -1,0 +1,4 @@
+# HMM0 Next Emission Distribution
+The purpose of this task is to predict how the system will evolve over time and estimate the probability for different emissions / events in the system i.e. what can be observed from the HMM. Given parameters of the HMM is: the state probability distribution (i.e. the probability that the system is in each of the N states), the transition matrix (i.e. the matrix that gives the probability to transition from one state to another) and the emission matrix (i.e. the matrix that gives the probability for the different emissions / events / observations given a certain state).
+
+More specifically, the task is to given the current state probability distribution estimate the probabity for the different emissions after the next transition, i.e. after the system has made a single transition.
