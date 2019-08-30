@@ -1,5 +1,5 @@
 # Artificial-Intelligence
-The repository contains lab assignments for the course DD2380  Artificial Intelligence. These assignments deal with Hidden Markov Models and Zero Sum Games.
+The repository contains lab assignments for a course in Artificial Intelligence. These assignments deal with Hidden Markov Models and Zero Sum Games.
 
 ## Assignment 1
 
