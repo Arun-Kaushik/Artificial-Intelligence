@@ -231,56 +231,6 @@ public class HMM{
   }
 
 
-  public double [][] matrixMultiplication( double [][] Matrix1, double [][] Matrix2 ){
-    /*
-    Takes two matricies as inputScanner and performs matrix multiplication between them.
-    */
-    int i, j, k, m, n;
-
-    int noRowsMatrix1 = Matrix1.length;
-    int noColsMatrix1 = Matrix1[0].length;
-    int noRowsMatrix2 = Matrix2.length;
-    int noColsMatrix2 = Matrix2[0].length;
-
-    // The resulting matrix will have dimensions given by the number of rows
-    // of matrix 1 and the number of columns of matrix 2.
-    double[][] MatrixMultiplied = new double [noRowsMatrix1][noColsMatrix2];
-
-    // Compute the result for every element in the resulting matrix.
-    for (i = 0; i < noRowsMatrix1; i++) {
-      for(j = 0; j < noColsMatrix2; j++) {
-       for(k = 0; k < noColsMatrix1; k++) {
-
-         MatrixMultiplied[i][j] += Matrix1[i][k] * Matrix2[k][j];
-
-       }
-      }
-    }
-
-    return MatrixMultiplied;
-  }
-
-
-  public  double [] getColumn( double [][] matrix, int colNo ){
-    /*
-    Extracts a column from a matrix based on a column index.
-    */
-    double [] extractedColumn;
-    int no_rows;
-
-    no_rows = matrix.length;
-    extractedColumn = new double[no_rows];
-
-    for (int row = 0 ; row < no_rows ; row ++ ){
-
-        extractedColumn[row] = matrix[row][colNo];
-
-    }
-
-    return extractedColumn;
-  }
-
-
   public double alphaPassProb( int [] observstionSeq ){
     /*
       alpha forward pass with scaling and that returns a logged probability for the
