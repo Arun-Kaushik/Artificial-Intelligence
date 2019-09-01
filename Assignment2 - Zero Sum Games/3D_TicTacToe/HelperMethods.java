@@ -9,76 +9,33 @@ public class HelperMethods {
 
   }
 
-  public static int [] getColumn( int [][] matrix, int colNo ){
+  public static Double getLargerValue( double value1, double value2 ){
     /*
-    Extracts a column from a matrix based on a column index.
+      Returns the larger value out of two provided values.
     */
-    int [] extractedColumn;
-    int no_rows;
 
-    no_rows = matrix.length;
-    extractedColumn = new int[no_rows];
+    if( value1 >= value2 ){
 
-    for (int row = 0 ; row < no_rows ; row ++ ){
-
-      extractedColumn[row] = matrix[row][colNo];
+     return value1;
 
     }
-    return extractedColumn;
+
+    return value2;
   }
 
-  public static Double getLargerValue( double vold, double vnew ){
 
-    if(vold>= vnew){
-     return vold;
-   }
-    return vnew;
-  }
+  public static Double getSmallerValue( double value1, double value2 ){
+    /*
+      Returns the smaller value out of two provided values.
+    */
 
-  public static Double getSmallerValue(double vold, double vnew){
-    if(vold <=  vnew){
-    return vold;
-  }
-    return vnew;
-  }
+    if ( value1 <=  value2 ){
 
-  /*
+      return value1;
 
-  public Double getLargerValue( double vold, double vnew ){
-
-    if(vold>= vnew){
-     return vold;
-   }
-    return vnew;
-  }
-
-  public Double getSmallerValue(double vold, double vnew){
-    if(vold <=  vnew){
-    return vold;
-  }
-    return vnew;
-  }
-*/
-
-
-  public static int maxFinder( int [] array ){
-    // Retrives the largest element in an array.
-
-    int currentLargestValue;
-
-    currentLargestValue = array[0];
-
-    for( int i = 1; i < array.length; i++ ){
-
-        if( array[i] > currentLargestValue ){
-
-           currentLargestValue = array[i];
-
-        }
     }
-    return currentLargestValue;
+
+    return value2;
   }
-
-
 
 }
