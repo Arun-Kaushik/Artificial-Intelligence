@@ -191,7 +191,7 @@ public class Player {
   }
 
 
-  public int miniMaxAlgorithm( GameState currState, int alpha, int beta, int depth, boolean XTurn ){
+  public int miniMaxAlgorithm( GameState currentState, int alpha, int beta, int depth, boolean XTurn ){
     /*
       Minimax algorithm with alpha-beta pruning.
       state: the current state we are analyzing.
@@ -215,13 +215,13 @@ public class Player {
 
     int highestValue, currentValue, currentHashValue;
 
-    terminalState = ( depth == 0|| currState.isEOG() );
+    terminalState = ( depth == 0|| currentState.isEOG() );
     timesUp = ( deadline.timeUntil() < deadlineTime );
 
     if( terminalState || timesUp ){
 
       // The evaluation value of the current state.
-      stateMinimaxValue = heuristicFunction( currState );
+      stateMinimaxValue = heuristicFunction( currentState );
 
       return stateMinimaxValue;
     /*
@@ -231,7 +231,7 @@ public class Player {
     }else{
 
       nextStates = new Vector<GameState>();
-      currState.findPossibleMoves(nextStates);
+      currentState.findPossibleMoves(nextStates);
 
       /* If the current next child state has not been visited before, i.e. we
       have not calculated a score for this game board setting before then
@@ -304,15 +304,21 @@ public class Player {
   }
 
 
-  public int heuristicFunction( GameState currState ){
+  public int heuristicFunction( GameState currentState ){
+
+    /*
+
+      Note: This/any heuristic function is really complicated to understand if you do
+      not know the rules of the game.
+    */
 
     int totalScore = 0;
 
-    int no_white = 0;
-    int no_red = 0;
+    int no_white_pieces = 0;
+    int no_red_pieces = 0;
 
-    int no_red_kings = 0;
-    int no_white_kings = 0;
+    int no_red_pieces_kings = 0;
+    int no_white_pieces_kings = 0;
 
 
     int board_side_red = 0;
@@ -322,29 +328,52 @@ public class Player {
     int white_kings_advancing = 0;
 
 
-    int no_red_protected = 0;
-    int no_white_protected = 0;
+    int no_red_pieces_protected = 0;
+    int no_white_pieces_protected = 0;
 
-    int itter_left = 4;
-    int itter_right = 3;
+    int protected_left_side = 4;
+    int protected_right_side = 3;
+    int next_protected_position = 8;
 
-  	int unprotect_itter = 5;
-  	int unprotect_itter_2 = 8;
+  	int unprotect_upper = 5;
+  	int unprotect_lower = 8;
 
   	int three_1 = 0;
   	int three_2 = 0;
 
-  	int no_white_under_attack = 0;
-  	int no_red_under_attack = 0;
+  	int no_white_pieces_under_attack = 0;
+  	int no_red_pieces_under_attack = 0;
 
 
-    Move lastMove = currState.getMove();
+    Move lastMove = currentState.getMove();
     int moveType = lastMove.getType();
-    int lastPlayer = currState.getNextPlayer();
+    int lastPlayer = currentState.getNextPlayer();
 
-
+    // Used to evaluate the final move ove the game.
     boolean redWinningMove, whiteWinningMove, drawMove;
     boolean playerRed, playerWhite;
+
+    boolean isJumpingMove,isRegularMove, byOurPlayer, byOpponent;
+
+    // When a piece jumps over another piece it can jump over several pieces
+    // in one go.
+    int noJumps;
+
+    int noValidPositions;
+
+    int cellContent, whitePiece, redPiece, king;
+    boolean containsWhitePiece, containsRedPiece, containsKing ;
+
+    boolean onOwnRedSide, onOwnWhiteSide;
+
+
+    boolean isProtectedLeftSide, isProtectedRightSide;
+
+
+    boolean unProtectedUpper, unProtectedLower, unProtectedBehindLeft, unProtectedBehindRight, unProtectedFrontLeft, unProtectedFrontRight;
+    boolean whiteAttacking, redAttacking, kingAttacking;
+    boolean unProtected, underAttack, unProtectedBehind, unProtectedFront;
+    boolean underAttackLeft, underAttackRight;
 
     playerRed = ( player == Constants.CELL_RED );
     playerWhite = ( player == Constants.CELL_WHITE );
@@ -352,7 +381,14 @@ public class Player {
     redWinningMove = lastMove.isRedWin();
     whiteWinningMove = lastMove.isWhiteWin();
     drawMove = ( moveType == Move.MOVE_DRAW );
+    isRegularMove = ( moveType == Move.MOVE_NORMAL );
 
+
+
+    /*
+      When we get to the final move it is either a winning move, a losing move or
+      a draw move.
+    */
 
     if( redWinningMove && playerRed ) return 1000000;
 
@@ -365,166 +401,330 @@ public class Player {
     else if( drawMove ) return 0;
 
 
-  if(lastMove.isJump() && lastPlayer != player){
-    int noJumps =moveType;
-    return 10000*noJumps;
 
-  }else if(lastMove.isJump() && lastPlayer == player){
-      int noJumps =moveType;
-      return -10000*noJumps;
+    isJumpingMove = lastMove.isJump();
+    byOurPlayer = ( lastPlayer != player );
+    byOpponent = ( lastPlayer == player );
 
 
-  }else if(moveType==Move.MOVE_NORMAL){
 
-    for (int i = 0; i < currState.NUMBER_OF_SQUARES; i++) {
-      //COUNTING PIECES
-      if (0!=(currState.get(i)&Constants.CELL_WHITE)) {
-        no_white++;
-        if (0 != (currState.get(i)&Constants.CELL_KING)){
-           no_white_kings++;
-         }
+    // If the last move was a jumping move.
+    if ( isJumpingMove ){
 
-      }else if (0!=(currState.get(i)& Constants.CELL_RED)) {
-            no_red++;
-            if (0 != (currState.get(i)&Constants.CELL_KING)){
-               no_red_kings++;
-             }
-          }
+      // If the last jumping move was made by our player.
+      if( byOurPlayer ){
 
-          if(0!=(currState.get(i)&Constants.CELL_RED) && i>=20){
-            board_side_red++;
-          }else if(0!=(currState.get(i)&Constants.CELL_WHITE) && i<=11){
-            board_side_white++;
-          }
+        noJumps = moveType;
 
-          if(i==itter_left){
-            itter_left+=8;
-            if(0!=(currState.get(i)&Constants.CELL_RED)){
-               no_red_protected++;}
-            if(0!=(currState.get(i)&Constants.CELL_WHITE)){
-            no_white_protected++;}
+        // The totalScore is weighted by the number of jumps in this move.
+        // More jumps means that more pieces are killed and is thus more advantageous.
+        totalScore = 10000 * noJumps;
 
-          }else if(i==itter_right){
-            itter_right+=8;
-            if(0!=(currState.get(i)&Constants.CELL_RED)){
-              no_red_protected++;
+        return totalScore;
+
+      // If the last jumping move was made by our opponent.
+      }else if( byOurPlayer ){
+
+        noJumps = moveType;
+
+        // The totalScore is weighted by the number of jumps in this move.
+        // More jumps means that more pieces are killed and is thus more advantageous.
+        totalScore = - 10000 * noJumps;
+
+        return totalScore;
+
+      }
+
+    // If the last move was a regular move.
+    }else if( isRegularMove ){
+
+      noValidPositions = currentState.NUMBER_OF_SQUARES;
+
+      // We go through every position on the board where a piece could be placed.
+      for ( int position = 0; position < noValidPositions; position ++ ) {
+
+        redPiece = Constants.CELL_RED;
+        whitePiece = Constants.CELL_WHITE;
+        cellContent = currentState.get( position );
+        containsWhitePiece = 0 != ( cellContent & whitePiece );
+        containsRedPiece = 0 != (cellContent & redPiece);
+
+
+        // First we check if the cell contains a white piece.
+        if ( containsWhitePiece ) {
+
+            // We keep track of the total number of white pieces on the board at this state.
+            no_white_pieces ++;
+
+            king = Constants.CELL_KING;
+            containsKing = ( 0 != ( cellContent & king ));
+
+            // If the cell contains a king we update the number of white kings left
+            // at this state in the game.
+            if ( containsKing ) no_white_pieces_kings ++;
+
+
+        }else if ( containsRedPiece ) {
+
+              // We keep track of the total number of red pieces on the board at this state.
+              no_red_pieces ++;
+
+              king = Constants.CELL_KING;
+              containsKing = ( 0 != ( cellContent & king ));
+
+              // If the cell contains a king we update the number of red kings left
+              // at this state in the game.
+              if ( containsKing ) no_red_pieces_kings ++;
+
             }
-            if(0!=(currState.get(i)&Constants.CELL_WHITE)){
-               no_white_protected++;
-             }
-          }
 
-  				if(i==unprotect_itter && i<24){
+        /*
+          Here the pieces location of the board is taken into consideration.
+          It is more advantageous to be closer to the other side of the board.
 
-  					if(currState.get(i)==Constants.CELL_RED){
-  						if ( (currState.get(i-4)==Constants.CELL_EMPTY)  || (currState.get(i-5)==Constants.CELL_EMPTY)  ){
-  								//no_red_attackable+=1;
-  								if ((currState.get(i+4)==Constants.CELL_WHITE)|| (currState.get(i+3)==Constants.CELL_WHITE)){
-  										no_red_under_attack++;
-  								}
-  							}
-  						else if ( (currState.get(i-4)==Constants.CELL_WHITE)  || (currState.get(i-5)==Constants.CELL_WHITE)  ){
-  								//no_red_attackable+=1;
-  								if ((currState.get(i+4)==Constants.CELL_EMPTY)|| (currState.get(i+3)==Constants.CELL_EMPTY)){
-  									if (0 != (currState.get(i)&Constants.CELL_KING)){
-  										no_red_under_attack++;
-  									}
-  								}
-  							}
+          For reference, this is how the locations on the board is indicesed:
 
-  					}else if((currState.get(i)==Constants.CELL_WHITE)){
-  						if(  (currState.get(i+4)==Constants.CELL_EMPTY)   || (currState.get(i+3) ==Constants.CELL_EMPTY) ){
-  								//no_white_attackable+=1;
-  								if ((currState.get(i-4)==Constants.CELL_RED) || (currState.get(i-5)==Constants.CELL_RED)){
-  										no_white_under_attack++;
-  								}
-  							}
-  						if(  (currState.get(i+4)==Constants.CELL_RED)   || (currState.get(i+3) ==Constants.CELL_RED) ){
-  								//no_white_attackable+=1;
-  								if ((currState.get(i-4)==Constants.CELL_EMPTY) || (currState.get(i-5)==Constants.CELL_EMPTY)){
-  									if (0 != (currState.get(i)&Constants.CELL_KING)){
-  										no_white_under_attack++;
-  									}
-  								}
-  							}
-  					}
-  					unprotect_itter++;
-  					three_1++;
-  					if(three_1%3==0){
-  						unprotect_itter+=5;
-  						three_1=0;
-  					}
-  				}
+          * Cells are numbered as follows:
+          *
+          *    col 0  1  2  3  4  5  6  7
+          * row  -------------------------
+          *  0  |     0     1     2     3 |  0
+          *  1  |  4     5     6     7    |  1
+          *  2  |     8     9    10    11 |  2
+          *  3  | 12    13    14    15    |  3
+          *  4  |    16    17    18    19 |  4
+          *  5  | 20    21    22    23    |  5
+          *  6  |    24    25    26    27 |  6
+          *  7  | 28    29    30    31    |  7
+          *      -------------------------
+          *        0  1  2  3  4  5  6  7
 
-  				//right 8,9,10,16,17,18,24,25,26
-  				if(i==unprotect_itter_2 && i<27){
+        */
 
-  					if(currState.get(i)==Constants.CELL_RED){
-  						if ( (currState.get(i-4)==Constants.CELL_EMPTY)   ||  (currState.get(i-3)==Constants.CELL_EMPTY)  ){
-  								//no_red_attackable+=1;
-  								if ( (currState.get(i+4)==Constants.CELL_WHITE) || (currState.get(i+5)==Constants.CELL_WHITE) ){
-  										no_red_under_attack++;
-  								}
-  						}
-  						else if ( (currState.get(i-4)==Constants.CELL_WHITE)   ||  (currState.get(i-3)==Constants.CELL_WHITE)  ){
-  								//no_red_attackable+=1;
-  								if ( (currState.get(i+4)==Constants.CELL_EMPTY) || (currState.get(i+5)==Constants.CELL_EMPTY) ){
-  									if (0 != (currState.get(i)&Constants.CELL_KING)){
-  										no_red_under_attack++;
-  									}
-  								}
-  						}
+        // Checks if the players pieces are still close to the starting position
+        // at the players own side of the board, or if they are more agressive and
+        // have moved to the other side of the board.
+        onOwnRedSide = ( containsRedPiece && position >= 20 );
+        if( onOwnRedSide ) board_side_red ++;
 
-  					}
+        onOwnWhiteSide = ( containsWhitePiece && position <= 11 );
+        if( onOwnWhiteSide ) board_side_white ++;
 
-  					else if(currState.get(i)==Constants.CELL_WHITE){
-  						if( (currState.get(i+4) ==Constants.CELL_EMPTY) ||  (currState.get(i+5) ==Constants.CELL_EMPTY) ){
-  									//no_white_attackable+=1;
-  									if ((currState.get(i-4)==Constants.CELL_RED) || (currState.get(i-3)==Constants.CELL_RED) ){
-  											no_white_under_attack++;
-  									}
-  						}
-  						else if( (currState.get(i+4) ==Constants.CELL_RED) ||  (currState.get(i+5) ==Constants.CELL_RED) ){
-  									//no_white_attackable+=1;
-  									if ((currState.get(i-4)==Constants.CELL_EMPTY) || (currState.get(i-3)==Constants.CELL_EMPTY) ){
-  										if (0 != (currState.get(i)&Constants.CELL_KING)){
-  											no_white_under_attack++;
-  										}
-  									}
-  						}
 
-  				}
-  					//getting the indices for unprotected rows shifted to the right
-  					unprotect_itter_2++;
-  					three_2++;
 
-  					if(three_2%3==0){
-  						unprotect_itter_2+=5;
-  						three_2=0;
-  					}
-  				}
+        // When a piece is located against the walls it is protected such that the
+        // others players pieces can not jump over it, but it can still jump over them.
+
+        isProtectedRightSide = position == protected_right_side;
+        isProtectedLeftSide = position == protected_left_side;
+
+        if( isProtectedLeftSide ){
+
+            protected_left_side += next_protected_position;
+
+            if( containsRedPiece ) no_red_pieces_protected ++;
+            if( containsWhitePiece ) no_white_pieces_protected ++;
+
+        }else if( isProtectedRightSide ){
+
+              protected_right_side += next_protected_position;
+
+              if( containsRedPiece ) no_red_pieces_protected ++;
+              if( containsWhitePiece ) no_white_pieces_protected ++;
+
         }
-  }
 
-  if(Constants.CELL_RED==player){
-      totalScore += piecediff(no_red,no_white);
-      totalScore+=piecediff(no_red_kings,no_white_kings);
-      totalScore+=piecediff(board_side_red,board_side_white);
-      totalScore+=40*piecediff(no_red_protected,no_white_protected);
-  		totalScore+=70*piecediff(no_white_under_attack, no_red_under_attack);
 
-  }else{
-    totalScore += piecediff(no_white,no_red);
-    totalScore+=piecediff(no_white_kings,no_red_kings);
-    totalScore+=piecediff(board_side_white,board_side_red);
-    totalScore+=40*piecediff(no_white_protected,no_red_protected);
-  	totalScore+=70*piecediff(no_red_under_attack, no_white_under_attack);
+      unProtectedUpper = position == unprotect_upper && position < 24;
 
-  }
-  return totalScore;
-  }
+      if( unProtectedUpper ){
 
-  int piecediff(int no_p1, int no_p2 ){
-    return no_p1-no_p2;
+        /*
+        If a red piece is unprotected from behind.
+        */
+				if( containsRedPiece ){
+
+          unProtectedBehindLeft = ( currentState.get( position - 5 ) == Constants.CELL_EMPTY );
+          unProtectedBehindRight = ( currentState.get( position - 4 ) == Constants.CELL_EMPTY );
+
+          unProtectedFrontLeft = ( currentState.get( position - 4 ) == Constants.CELL_WHITE );
+          unProtectedFrontRight = ( currentState.get( position - 5 ) == Constants.CELL_WHITE );
+
+
+					if ( unProtectedBehindLeft || unProtectedBehindRight  ){
+
+              whiteAttacking = ( currentState.get( position + 4 ) == Constants.CELL_WHITE) || ( currentState.get( position + 3 ) == Constants.CELL_WHITE );
+							if ( whiteAttacking ) no_red_pieces_under_attack ++;
+
+
+          }else if ( unProtectedFrontLeft || unProtectedFrontRight ){
+
+							unProtected = ( currentState.get( position + 4 ) == Constants.CELL_EMPTY ) || ( currentState.get( position + 3 ) == Constants.CELL_EMPTY );
+							if ( unProtected ){
+
+                kingAttacking = 0 != (currentState.get( position )&Constants.CELL_KING);
+
+                if (kingAttacking) no_red_pieces_under_attack ++;
+
+							}
+						}
+
+        /*
+        If a white piece is unprotected from behind.
+        */
+				}else if( containsWhitePiece ){
+
+          // unProtectedBehindLeft = ( currentState.get( position - 5 ) == Constants.CELL_EMPTY );
+          // unProtectedBehindRight = ( currentState.get( position - 4 ) == Constants.CELL_EMPTY );
+
+          unProtectedFrontLeft = (currentState.get( position + 3 ) ==Constants.CELL_EMPTY);
+          unProtectedFrontRight = (currentState.get( position + 4 ) == Constants.CELL_EMPTY) ;
+
+          underAttack = ( currentState.get( position + 4 ) == Constants.CELL_RED ) || ( currentState.get( position + 3 ) == Constants.CELL_RED );
+
+
+					if( unProtectedFrontRight || unProtectedFrontLeft ){
+
+              redAttacking = ( currentState.get( position - 4 ) == Constants.CELL_RED) || (currentState.get( position - 5 ) == Constants.CELL_RED );
+							if ( redAttacking ) no_white_pieces_under_attack ++;
+
+				  } else if( underAttack ){
+              unProtected = ( currentState.get( position - 4 ) == Constants.CELL_EMPTY ) || ( currentState.get( position - 5 ) == Constants.CELL_EMPTY );
+
+              if ( unProtected ){
+
+                kingAttacking = 0 != ( currentState.get( position ) & Constants.CELL_KING );
+								if ( kingAttacking ) no_white_pieces_under_attack ++;
+
+							}
+						}
+			}
+
+				unprotect_upper++;
+				three_1++;
+
+				if( three_1 % 3 == 0 ){
+
+					unprotect_upper += 5;
+					three_1 = 0;
+
+				}
+			}
+
+      unProtectedLower = position == unprotect_lower && position < 27;
+
+      /*
+      If a piece is unprotected in the lower half of the board.
+      */
+    	if( unProtectedLower ){
+
+        /* If a red piece is unprotected in the lower half of the board. */
+        if( containsRedPiece ){
+
+    				if( containsRedPiece ){
+
+
+
+              underAttackLeft = ( currentState.get( position - 4 ) == Constants.CELL_WHITE );
+              underAttackRight = ( currentState.get( position - 3 ) == Constants.CELL_WHITE );
+
+              unProtectedFrontLeft = ( currentState.get( position - 4 ) == Constants.CELL_EMPTY );
+              unProtectedFrontRight = ( currentState.get( position - 3 ) == Constants.CELL_EMPTY );
+
+    					if ( unProtectedFrontLeft  ||  unProtectedFrontRight  ){
+
+                  whiteAttacking = ( currentState.get( position + 4) == Constants.CELL_WHITE) || (currentState.get(position + 5) == Constants.CELL_WHITE);
+
+                  if ( whiteAttacking ) no_red_pieces_under_attack++;
+
+    					}else if ( underAttackLeft || underAttackRight ){
+
+                  unProtected = ( currentState.get( position + 4 ) == Constants.CELL_EMPTY)  || ( currentState.get( position + 5 ) == Constants.CELL_EMPTY );
+
+  								if ( unProtected ){
+                    kingAttacking = 0 != ( currentState.get( position ) & Constants.CELL_KING );
+  									if ( kingAttacking ) no_red_pieces_under_attack++;
+
+  								}
+    						}
+
+    					}
+
+          /* If a white piece is unprotected in the lower half of the board. */
+
+    			else if( containsWhitePiece ){
+
+            unProtectedBehind = (currentState.get( position + 4 ) == Constants.CELL_EMPTY ) ||  (currentState.get( position + 5 ) == Constants.CELL_EMPTY ) ;
+            underAttack = (currentState.get(position+4) == Constants.CELL_RED ) ||  ( currentState.get( position + 5 ) == Constants.CELL_RED );
+
+						if( unProtectedBehind ){
+
+              redAttacking = ( currentState.get( position - 4 ) == Constants.CELL_RED ) || ( currentState.get( position - 3 ) == Constants.CELL_RED );
+							if ( redAttacking ) no_white_pieces_under_attack ++;
+            // Only the king can walk in the opposite direction. other pieces have
+            // to move towards the other side of the board.
+						}else if( underAttack ){
+
+              unProtectedFront = (currentState.get(position-4)==Constants.CELL_EMPTY) || (currentState.get(position-3)==Constants.CELL_EMPTY) ;
+							if ( unProtectedFront ){
+
+                kingAttacking = 0 != (currentState.get( position ) & Constants.CELL_KING);
+							  if ( kingAttacking ) no_white_pieces_under_attack ++;
+
+							}
+						}
+
+    			}
+    					//getting the indices for unprotected rows shifted to the right
+    					unprotect_lower ++;
+    					three_2 ++;
+
+    					if( three_2 % 3 == 0 ){
+
+    						unprotect_lower += 5;
+    						three_2 = 0;
+    					}
+    				}
+          }
+        }
+
+        /*
+          The heuristic value is calculated differently depending on if the current player is
+          red or white.
+
+          The score is calculated as the sum of the differences between each players varibles.
+          For instance, first the totalScore is increased by the difference between the
+          total piece count for each player. The logic behind this is that it is more
+          advantageous to have more pieces left on the board.
+
+          Note that extra weight is given to having protected pieces and attacking
+          other pieces.
+        */
+
+        if( playerRed ){
+
+            totalScore += piecediff( no_red_pieces, no_white_pieces );
+            totalScore += piecediff( no_red_pieces_kings, no_white_pieces_kings );
+            totalScore += piecediff( board_side_red, board_side_white );
+            totalScore += 40 * piecediff( no_red_pieces_protected, no_white_pieces_protected );
+        		totalScore += 70 * piecediff( no_white_pieces_under_attack, no_red_pieces_under_attack );
+
+        }else{
+
+            totalScore += piecediff( no_white_pieces, no_red_pieces );
+            totalScore += piecediff( no_white_pieces_kings, no_red_pieces_kings );
+            totalScore += piecediff( board_side_white, board_side_red );
+            totalScore += 40 * piecediff( no_white_pieces_protected, no_red_pieces_protected );
+          	totalScore += 70 * piecediff( no_red_pieces_under_attack, no_white_pieces_under_attack );
+
+        }
+      }
+      return totalScore;
+    }
+
+  int piecediff( int no_p1, int no_p2 ){
+
+    return no_p1 - no_p2;
   }
+  
 }
